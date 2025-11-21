@@ -21,6 +21,13 @@ const BATCH_BUILD_TIME = 30000; // 30 seconds before execution
 const START_PRICE = 10;
 const END_PRICE = 2;
 
+// Phantom wallet types
+declare global {
+  interface Window {
+    solana?: any;
+  }
+}
+
 export default function App() {
   const [currentSlot, setCurrentSlot] = useState(599_999_800);
   const [currentPrice, setCurrentPrice] = useState(START_PRICE);
@@ -29,6 +36,7 @@ export default function App() {
   const [walletAddress, setWalletAddress] = useState('');
   const [auctionPhase, setAuctionPhase] = useState<'active' | 'building' | 'executed'>('active');
   const [timeRemaining, setTimeRemaining] = useState(0);
+  const [connecting, setConnecting] = useState(false);
 
   // Simulate slot progression
   useEffect(() => {
@@ -67,10 +75,45 @@ export default function App() {
     return () => clearInterval(interval);
   }, []);
 
-  const handleConnectWallet = () => {
-    const mockAddress = `${Math.random().toString(36).substring(2, 6)}...${Math.random().toString(36).substring(2, 6)}`;
-    setWalletAddress(mockAddress);
-    setWalletConnected(true);
+  // Check if wallet is already connected on mount
+  useEffect(() => {
+    const checkWalletConnection = async () => {
+      if (window.solana?.isPhantom) {
+        try {
+          const response = await window.solana.connect({ onlyIfTrusted: true });
+          const address = response.publicKey.toString();
+          const shortAddress = `${address.slice(0, 4)}...${address.slice(-4)}`;
+          setWalletAddress(shortAddress);
+          setWalletConnected(true);
+        } catch (err) {
+          // User not connected yet
+        }
+      }
+    };
+    
+    checkWalletConnection();
+  }, []);
+
+  const handleConnectWallet = async () => {
+    if (!window.solana?.isPhantom) {
+      alert('Please install Phantom wallet from phantom.app');
+      window.open('https://phantom.app/', '_blank');
+      return;
+    }
+
+    try {
+      setConnecting(true);
+      const response = await window.solana.connect();
+      const address = response.publicKey.toString();
+      const shortAddress = `${address.slice(0, 4)}...${address.slice(-4)}`;
+      setWalletAddress(shortAddress);
+      setWalletConnected(true);
+    } catch (err) {
+      console.error('Wallet connection failed:', err);
+      alert('Failed to connect wallet. Please try again.');
+    } finally {
+      setConnecting(false);
+    }
   };
 
   const handleSubmitBid = () => {
@@ -90,7 +133,7 @@ export default function App() {
   if (auctionPhase === 'executed') {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-950 via-slate-900 to-purple-900">
-        <Header />
+        <Header walletConnected={walletConnected} walletAddress={walletAddress} />
         <FinalScreen bids={bids} targetSlot={TARGET_SLOT} />
       </div>
     );
@@ -98,7 +141,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-950 via-slate-900 to-purple-900">
-      <Header />
+      <Header walletConnected={walletConnected} walletAddress={walletAddress} />
       
       <HeroSection 
         targetSlot={TARGET_SLOT}
@@ -124,6 +167,7 @@ export default function App() {
             onConnectWallet={handleConnectWallet}
             onSubmitBid={handleSubmitBid}
             auctionPhase={auctionPhase}
+            connecting={connecting}
           />
         </div>
 

@@ -1,6 +1,11 @@
 import { Zap } from 'lucide-react';
 
-export function Header() {
+interface HeaderProps {
+  walletConnected?: boolean;
+  walletAddress?: string;
+}
+
+export function Header({ walletConnected, walletAddress }: HeaderProps) {
   return (
     <header className="border-b border-purple-500/20 bg-slate-900/50 backdrop-blur-sm sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
@@ -15,6 +20,13 @@ export function Header() {
         </div>
         
         <div className="flex items-center gap-4">
+          {walletConnected && walletAddress && (
+            <div className="flex items-center gap-2 px-3 py-1.5 bg-green-500/10 border border-green-500/30 rounded-lg">
+              <div className="w-2 h-2 bg-green-400 rounded-full" />
+              <span className="text-xs text-green-300 font-mono hidden sm:inline">{walletAddress}</span>
+            </div>
+          )}
+          
           <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-purple-500/10 border border-purple-500/30 rounded-lg">
             <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
             <span className="text-xs text-purple-200">Raiku AOT Active</span>

@@ -41,7 +41,7 @@ Chronos Auction uses **Raiku deterministic execution** to guarantee:
 ### 2. Interactive Web Application
 - **Live Demo**: This prototype!
 - **Features**:
-  - Hero page with countdown to reserved slot 600,000,001
+  - Hero page with countdown to reserved slot 600,001
   - Real-time decaying Dutch auction price chart (Recharts)
   - Wallet connection simulation
   - Bid submission with microsecond timestamp
@@ -72,9 +72,9 @@ Chronos Auction uses **Raiku deterministic execution** to guarantee:
 
 ### Interactive Flow:
 
-1. **Landing** - See the countdown to slot 600,000,001 (Raiku AOT reservation)
+1. **Landing** - See the countdown to slot 600,001 (Raiku AOT reservation)
 2. **Price Chart** - Watch the real-time Dutch auction price decay from 10 SOL to 2 SOL
-3. **Connect Wallet** - Click "Connect Phantom Wallet" to simulate wallet connection
+3. **Connect Wallet** - Click "Connect Phantom Wallet" to connect your real Phantom wallet
 4. **Submit Bid** - Submit your bid at the current Dutch price
 5. **Leaderboard** - See your bid appear in perfect timestamp order
 6. **Wait** - After 5 minutes, the auction moves to "Building Raiku Batch" phase
@@ -82,6 +82,11 @@ Chronos Auction uses **Raiku deterministic execution** to guarantee:
 
 ### Quick Test (Fast Mode):
 The demo is set to start 2 minutes into the auction so you can experience the full flow quickly!
+
+### Requirements:
+- **Phantom Wallet**: Install from [phantom.app](https://phantom.app/) to connect your real wallet
+- The app will auto-connect if you're already logged into Phantom
+- Click "Connect Phantom Wallet" if not already connected
 
 ---
 

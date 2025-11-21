@@ -9,6 +9,7 @@ interface BidInterfaceProps {
   onConnectWallet: () => void;
   onSubmitBid: () => void;
   auctionPhase: 'active' | 'building' | 'executed';
+  connecting?: boolean;
 }
 
 export function BidInterface({ 
@@ -17,7 +18,8 @@ export function BidInterface({
   walletAddress, 
   onConnectWallet, 
   onSubmitBid,
-  auctionPhase 
+  auctionPhase,
+  connecting
 }: BidInterfaceProps) {
   const [bidSubmitted, setBidSubmitted] = useState(false);
 
@@ -45,10 +47,11 @@ export function BidInterface({
             </p>
             <Button 
               onClick={onConnectWallet}
+              disabled={connecting}
               className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white"
             >
               <Wallet className="size-4 mr-2" />
-              Connect Phantom Wallet
+              {connecting ? 'Connecting...' : 'Connect Phantom Wallet'}
             </Button>
           </div>
 
